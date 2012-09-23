@@ -1,0 +1,121 @@
+# require 'js-yaml'
+# cli = require './CLI.yaml'
+
+# argv_parser = new (require './lib/argv_parser' .parser)(cli)
+
+# serialize = (argv_parser)->
+# 	console_string   = require './lib/console_string'
+
+# 	lstr = ''
+# 	rstr = ''
+# 	for k in argv_parser
+# 		lstr += "#k\n"
+# 		rstr += "["+typeof argv_parser[k]+"]" + "\n"
+
+# 	rstr = console_string.align_right 10, rstr
+# 	lstr = console_string.override 20, lstr,rstr
+# 	# rstr = console_string.align_right 20, rstr
+# 	# lstr = console_string.override 20, lstr,rstr
+
+# 	return lstr
+
+# # console.log serialize(argv_parser)
+# # return
+
+# argv = argv_parser.parse()
+
+fs = require 'fs'
+
+module.exports = (cli_options)->
+
+	dir = require('path').dirname(module.parent.filename)
+	if not cli_options?
+
+		yaml_path = dir+'/CLI.yaml'
+		json_path = dir+'/CLI.json'
+
+		if fs.existsSync yaml_path
+			require 'js-yaml'
+			try
+				cli_options := require yaml_path
+			catch e
+				console.error "Could not get CLI.yaml"
+				console.error "Yaml: "+e
+		else if fs.existsSync json_path
+			try
+				cli_options := require json_path
+			catch e
+				console.error "Could not get CLI.json"
+				console.error "Json: "+e
+		# else
+		# 	throw "No cli_options defined and CLI.json and CLI.yaml not found."
+
+	if not cli_options
+		cli_options = {}
+
+	cli_options.@aliases
+	cli_options.@@booleans
+	cli_options.@defaults
+	cli_options.@examples
+	cli_options.@descriptions
+
+	# add --version option
+	# get version information from following sources:
+	# cli_options, package.json
+	cli_version = cli_options.version
+
+	if not cli_options.no_default
+		if fs.existsSync dir+"/package.json"
+			try
+				package_json = require dir+"/package.json"
+
+				if not cli_version
+					cli_version := package_json.name+" "+package_json.version
+
+				cli_options.dependencies = package_json.@dependencies
+
+			catch e
+				console.log "No package.json found"
+				cli_version = ''
+
+	if cli_version !== null
+		cli_options.@@booleans.push 'version'
+
+	# add --examples, --defaults, --help, --options options
+	if not cli_options.no_default
+		# cli_options.@@booleans <<< ['examples', 'defaults', 'help', 'options']
+		cli_options.booleans .= concat ['examples', 'defaults', 'help', 'options', 'dependencies']
+
+		# cli_options
+		cli_options.descriptions <<<
+			examples: "Show code examples"
+			defaults: "Show default command line values"
+			help: "Show help"
+			version: "Show version"
+
+		cli_options.aliases.@@help
+		cli_options.aliases.help .= concat ['usage', 'h']
+		# cli_options.aliases.@@version
+		# cli_options.aliases.version .= concat ['v']
+		# console.log cli_options.aliases
+
+	argv_parser = new (require './lib/argv_parser' .parser)(cli_options)
+	argv_parser.parse()
+
+	argv = argv_parser.argv
+
+	# handle --version
+	if argv.version and cli_version !== null
+		console.log cli_version
+		# return
+		# process.exit(0)
+
+	for k of <[help examples defaults options dependencies]>
+		if argv[k]
+			console.log cli_version+"\n"
+			argv_parser.show[k]()
+			break
+			# process.exit(0)
+
+	return argv_parser
+

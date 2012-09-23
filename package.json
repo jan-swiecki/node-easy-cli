@@ -1,0 +1,49 @@
+{
+	"name": "easy-cli",
+	"version": "0.1.0-2-beta",
+	"description": "Easy Command Line Interface. In development.",
+	"bugs":
+	{
+		"url": "https://github.com/jan-swiecki/easy-cli/issues",
+		"email": "jan.swiecki+easy-cli@gmail.com"
+	},
+	"homepage": "https://github.com/jan-swiecki/easy-cli",
+	"keywords": ["cli", "easy-cli"],
+	"author":
+	{
+		"name": "Jan Święcki",
+		"email": "jan.swiecki@gmail.com",
+		"url": "ministud.io/jan.swiecki"
+	},
+	"repository":
+	{
+		"type": "git",
+		"url": "https://github.com/jan-swiecki/easy-cli.git"
+	},
+	"files":
+	[
+		"lib",
+		"package.json",
+		"index.co",
+		"index.js",
+		"example1",
+		"example2",
+		"examples_gen",
+		"README.md"
+	],
+	"engines":
+	{
+		"node": "0.8.1"
+	},
+	"dependencies":
+	{
+		"wordwrap": ">=0.0.2",
+		"js-yaml": ">=1.0.2"
+	},
+	"devDependencies":
+	{
+		"coco": ">=0.8.0",
+		"gh-markdown": ">=0.0.2"
+	},
+	"preferGlobal": true
+}

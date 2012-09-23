@@ -1,0 +1,84 @@
+repeatString = require './repeatString'
+
+# replace all x with y
+# e.g. x='X', y='Y' then 'XXX' will become 'YYY', not 'Y'
+module.exports =
+
+	repeatString: repeatString
+
+	# multi_replace: (x,y)->
+	# 	if x not instanceof RegExp
+	# 		x = //[#x]
+
+		# s = s.substr(0,s.length) + @repeatString(fill_char, parseInt((rmax - s.length - spaces)/fill_char.length))
+		# arr_str[i] = s
+
+	space_fill: (rmax,str,fill_char || ' ')->
+		str .= replace /\r\n/, "\n"
+		arr_str = str/"\n"
+
+		for i from 0 to arr_str.length - 1
+			s = arr_str[i]
+
+			if fill_char == ' '
+				(spaces = 0) or (m=s.match /([ ]+)$/) and spaces = m[1].length
+			else
+				spaces = 0
+
+			s = s.substr(0,s.length) + @repeatString(fill_char, parseInt((rmax - s.length - spaces)/fill_char.length))
+			# s = s.substr(0,s.length) + ' '*(rmax - s.length - spaces)
+			arr_str[i] = s
+
+		return arr_str*"\n"
+
+	override: (rmax,lstr,rstr)->
+		lstr .= replace /\r\n/, "\n"
+		rstr .= replace /\r\n/, "\n"
+
+		lstr = @space_fill rmax,lstr
+
+		arr_lstr = lstr.split "\n"
+		arr_rstr = rstr.split "\n"
+		arr_new  = []
+
+
+		for i from 0 to lstr.length-1
+			l = arr_lstr[i]
+			r = arr_rstr[i]
+
+			if not r?
+				if l then arr_new.push l
+				break
+
+			# arr_new.push l.substr(0,rmax)+r.substr(rmax)
+			arr_new.push l.substr(0,rmax)+r
+
+		if arr_new.length > 1
+			arr_new*"\n"
+		else
+			arr_new[0]
+
+	align_right: (stop,text)->
+		text .= replace /\r\n/, "\n"
+		arr_text = text.split "\n"
+
+		# for k in arr_text
+		for k from 0 to arr_text.length - 1
+			t = arr_text[k]
+			# t .= replace /\ /, '.'
+			lstr = t.substr(0,stop)
+			rstr = t.substr(stop,t.length)
+
+			# fill with spaces till stop
+			if lstr.length < stop
+				d = stop - lstr.length
+				lstr += ' '*d
+
+			if m=lstr.match /([ ]+)$/
+				l = m[1].length
+				s = ' '*l
+				lstr = s + lstr - /[ ]+$/
+			arr_text[k] = lstr+rstr
+
+		return arr_text*"\n"
+

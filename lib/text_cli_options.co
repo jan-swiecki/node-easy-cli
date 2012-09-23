@@ -1,0 +1,87 @@
+wordwrap         = require 'wordwrap'
+console_string   = require './console_string'
+
+array_max = (arr)->
+	x = [].concat(arr).sort (a, b)-> b.length - a.length
+	if x.length then x[0] else then ''
+
+module.exports = (settings || {},print)->
+
+	# default settings
+	settings.options       ?= {}
+	settings.title         ?= "Options:"
+	settings.lmargin       ?= 0
+	settings.hmargin       ?= 1
+	settings.col1_lmarigin ?= 2
+	settings.col2_lmarigin ?= 2
+	settings.description   ?= null
+	settings.align_right   ?= false
+	settings.rmargin       ?= 80
+	
+	rmargin = settings.rmargin
+	
+	# for longer than 80 characters terminals
+	# rmargin = settings.col2_lmarigin+settings.col1_width+settings.col2_width
+
+	wrap = wordwrap(settings.lmargin,rmargin)
+
+	options_key_lmargin = ' '*settings.col1_lmarigin
+
+	# show Options
+	title = wrap(settings.title)+"\n"
+
+	# show description
+	# let settings.description then console.log @+"\n" if @
+	if settings.description then console.log settings.description+"\n"
+
+	# lcol
+	lcol = Object.keys settings.options
+	# lcol = settings.loptions
+	lcol_out = []
+
+	longest_lcol = array_max lcol .length
+
+	settings.col1_width    ?= longest_lcol+3
+	settings.col2_width    ?= rmargin - settings.col1_width - settings.col2_lmarigin
+
+	# for i in lcol
+	for i from 0 to lcol.length-1
+		lcol_out[i] = options_key_lmargin + lcol[i]
+		lcol_out[i] = wordwrap(0,settings.col1_width)(lcol_out[i])
+
+	# descriptions
+	rcol = Object.getOwnPropertyNames settings.options
+
+	# get longest lcol line length
+	# l = lcol_out.max().length
+	l = array_max(lcol_out).length
+
+	for i from 0 to lcol.length-1
+		k = lcol[i]
+
+		# lcol_out[i] = console_string.space_fill l,lcol_out[i]+' ','. '
+		
+		if settings.align_right === true
+			lcol_out[i] = console_string.align_right l,lcol_out[i]
+
+		rtext = ''
+		if settings.options[k] then rtext = settings.options[k]
+		rtext = wordwrap(0,settings.col2_width)(rtext)
+
+		rtext_lines = (rtext.split "\n").length
+
+		lcol_out[i] += "\n"*(rtext_lines-1)
+		lcol_out[i] = console_string.override(settings.col1_width+settings.col2_lmarigin,lcol_out[i],rtext)
+		lcol_out[i] += "\n"*settings.hmargin
+
+
+	str_lcol = lcol_out*""
+	ret = ''
+	if str_lcol.length
+		ret = title+"\n"+str_lcol
+
+	if print
+		console.log ret
+	else
+		return ret
+		
