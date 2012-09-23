@@ -1,29 +1,3 @@
-# require 'js-yaml'
-# cli = require './CLI.yaml'
-
-# argv_parser = new (require './lib/argv_parser' .parser)(cli)
-
-# serialize = (argv_parser)->
-# 	console_string   = require './lib/console_string'
-
-# 	lstr = ''
-# 	rstr = ''
-# 	for k in argv_parser
-# 		lstr += "#k\n"
-# 		rstr += "["+typeof argv_parser[k]+"]" + "\n"
-
-# 	rstr = console_string.align_right 10, rstr
-# 	lstr = console_string.override 20, lstr,rstr
-# 	# rstr = console_string.align_right 20, rstr
-# 	# lstr = console_string.override 20, lstr,rstr
-
-# 	return lstr
-
-# # console.log serialize(argv_parser)
-# # return
-
-# argv = argv_parser.parse()
-
 fs = require 'fs'
 
 module.exports = (cli_options)->
