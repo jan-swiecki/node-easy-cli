@@ -1,6 +1,6 @@
 {
 	"name": "easy-cli",
-	"version": "0.1.0-2-beta",
+	"version": "0.1.0-3-beta",
 	"description": "Easy Command Line Interface. In development.",
 	"bugs":
 	{
@@ -33,7 +33,7 @@
 	],
 	"engines":
 	{
-		"node": "0.8.1"
+		"node": ">=0.8.1"
 	},
 	"dependencies":
 	{
@@ -44,6 +44,5 @@
 	{
 		"coco": ">=0.8.0",
 		"gh-markdown": ">=0.0.2"
-	},
-	"preferGlobal": true
+	}
 }
