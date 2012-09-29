@@ -300,6 +300,11 @@ class exports.parser
 
 		@argv._ = argv
 
+		@argv_not_null = {}
+		for k of @argv
+			if @argv[k] !== null
+				@argv_not_null[k] = @argv[k]
+
 		@argv
 		# ret = @argv
 		# ret <<< {_: argv}

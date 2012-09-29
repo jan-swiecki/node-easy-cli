@@ -1,4 +1,4 @@
-## Easy-CLI v0.1.0 (beta)
+## Easy-CLI v0.1.1 (beta)
 
 Easy Command Line Interface NodeJS module.
 
@@ -321,6 +321,13 @@ E.g. `settings.argv = ['-x', '123', '--opt']` will simulate `$ node program.js -
   then **valueN+1** is considered a value of **keyN** and both are stored as `cli.argv.keyN = valueN+1` (e.g. `-x abc` --> `cli.argv.x = "abc"`).
 
 All single characters from **Multi-boolean** option (see `optionN` definition) are treated as boolean keys **except** characters that have *non*-boolean aliases.
+
+--
+
+### Changelog
+
+* 0.1.1
+ Added `easy_cli().argv_not_null` containing `easy_cli().argv` without `null` variables.
 
 --
 
