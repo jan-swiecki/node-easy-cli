@@ -253,8 +253,6 @@ class exports.parser
 				alias = @aliases[k][l]
 				if (i=argv.indexOf (@with_dashes alias)) !== -1
 					argv[i] = @with_dashes k
-					@argv_no_alias[i] = @with_dashes k
-
 
 		# parse boolean arguments
 		for b in @booleans
