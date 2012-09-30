@@ -1,31 +1,54 @@
 fs = require 'fs'
 
-module.exports = (cli_options)->
+require 'js-yaml'
+
+path_helper = require 'path'
+
+# scan directory tree for CLI.yaml|CLI.json
+# and require + return
+get_cli_settings = (path)->
+	dir = path
+	if fs.existsSync path		
+		stats = fs.statSync path
+		if stats.isFile!
+			dir := path_helper.dirname dir
+
+	dir .= replace /\\/g, '/'
+
+	_dir = dir.split '/'
+	
+	c = _dir.length
+
+
+	for k from 0 to c - 1
+		_path = _dir .join '/'
+		_dir.pop!
+		_path += '/CLI.'
+
+
+		for ext of <[json yaml]>
+			__path = _path+ext
+
+			if fs.existsSync __path
+				try
+					cli = require __path
+					break
+				catch e
+					console.error "Cannot load #{__path}: #e"
+
+
+	return cli	
+
+
+module.exports = (cli_options || {})->
 
 	dir = require('path').dirname(module.parent.filename)
-	if not cli_options?
 
-		yaml_path = dir+'/CLI.yaml'
-		json_path = dir+'/CLI.json'
+	# if not cli_options?
 
-		if fs.existsSync yaml_path
-			require 'js-yaml'
-			try
-				cli_options := require yaml_path
-			catch e
-				console.error "Could not get CLI.yaml"
-				console.error "Yaml: "+e
-		else if fs.existsSync json_path
-			try
-				cli_options := require json_path
-			catch e
-				console.error "Could not get CLI.json"
-				console.error "Json: "+e
-		# else
-		# 	throw "No cli_options defined and CLI.json and CLI.yaml not found."
+	_cli_options = get_cli_settings dir
 
-	if not cli_options
-		cli_options = {}
+	cli_options <<< _cli_options
 
 	cli_options.@aliases
 	cli_options.@@booleans

@@ -225,6 +225,8 @@ class exports.parser
 
 		argv = [].concat @raw_argv
 
+		@argv_no_alias = {}
+
 		# if not argv.length then return false
 
 		# separate booleans from within single element
@@ -251,6 +253,8 @@ class exports.parser
 				alias = @aliases[k][l]
 				if (i=argv.indexOf (@with_dashes alias)) !== -1
 					argv[i] = @with_dashes k
+					@argv_no_alias[i] = @with_dashes k
+
 
 		# parse boolean arguments
 		for b in @booleans
@@ -267,6 +271,8 @@ class exports.parser
 			else
 				@argv[b] = null
 
+			@argv_no_alias[b] = @argv[b]
+
 		# parse non boolean arguments
 		# i.e. try to match values to keys
 		for k from 0 to argv.length - 1
@@ -282,7 +288,11 @@ class exports.parser
 				else
 					@argv[a] = null
 					argv[k] = null
-		
+
+				@argv_no_alias[a] = @argv[a]
+
+		# argv_no_alias <<< @argv
+
 		# clone information across aliases
 		for k in @aliases
 			for l in @aliases[k]
@@ -304,6 +314,9 @@ class exports.parser
 		for k of @argv
 			if @argv[k] !== null
 				@argv_not_null[k] = @argv[k]
+
+		# @argv_no_alias = argv_no_alias
+		@argv_no_alias._ = argv
 
 		@argv
 		# ret = @argv

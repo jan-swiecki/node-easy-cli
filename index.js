@@ -1,34 +1,46 @@
 (function(){
-  var fs;
+  var fs, path_helper, get_cli_settings;
   fs = require('fs');
-  module.exports = function(cli_options){
-    var dir, yaml_path, json_path, e, cli_version, package_json, ref$, argv_parser, argv, i$, len$, k;
-    dir = require('path').dirname(module.parent.filename);
-    if (cli_options == null) {
-      yaml_path = dir + '/CLI.yaml';
-      json_path = dir + '/CLI.json';
-      if (fs.existsSync(yaml_path)) {
-        require('js-yaml');
-        try {
-          cli_options = require(yaml_path);
-        } catch (e$) {
-          e = e$;
-          console.error("Could not get CLI.yaml");
-          console.error("Yaml: " + e);
-        }
-      } else if (fs.existsSync(json_path)) {
-        try {
-          cli_options = require(json_path);
-        } catch (e$) {
-          e = e$;
-          console.error("Could not get CLI.json");
-          console.error("Json: " + e);
+  require('js-yaml');
+  path_helper = require('path');
+  get_cli_settings = function(path){
+    var dir, stats, _dir, c, k, to$, _path, i$, ref$, len$, ext, __path, cli, e;
+    dir = path;
+    if (fs.existsSync(path)) {
+      stats = fs.statSync(path);
+      if (stats.isFile()) {
+        dir = path_helper.dirname(dir);
+      }
+    }
+    dir = dir.replace(/\\/g, '/');
+    _dir = dir.split('/');
+    c = _dir.length;
+    for (k = 0, to$ = c - 1; k <= to$; ++k) {
+      _path = _dir.join('/');
+      _dir.pop();
+      _path += '/CLI.';
+      for (i$ = 0, len$ = (ref$ = ['json', 'yaml']).length; i$ < len$; ++i$) {
+        ext = ref$[i$];
+        __path = _path + ext;
+        if (fs.existsSync(__path)) {
+          try {
+            cli = require(__path);
+            break;
+          } catch (e$) {
+            e = e$;
+            console.error("Cannot load " + __path + ": " + e);
+          }
         }
       }
     }
-    if (!cli_options) {
-      cli_options = {};
-    }
+    return cli;
+  };
+  module.exports = function(cli_options){
+    var dir, _cli_options, cli_version, package_json, e, ref$, argv_parser, argv, i$, len$, k;
+    cli_options || (cli_options = {});
+    dir = require('path').dirname(module.parent.filename);
+    _cli_options = get_cli_settings(dir);
+    import$(cli_options, _cli_options);
     cli_options.aliases || (cli_options.aliases = {});
     cli_options.booleans || (cli_options.booleans = []);
     cli_options.defaults || (cli_options.defaults = {});
@@ -79,4 +91,9 @@
     }
     return argv_parser;
   };
+  function import$(obj, src){
+    var own = {}.hasOwnProperty;
+    for (var key in src) if (own.call(src, key)) obj[key] = src[key];
+    return obj;
+  }
 }).call(this);

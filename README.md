@@ -180,7 +180,7 @@ Object `cli` exposes the following properties:
 
 ### Settings
 
-`easy_cli` function accepts `settings` object as a parameter. If there are no settings defined then `easy_cli` will try to load settings object from `CLI.yaml` or `CLI.json` file.
+`easy_cli` function accepts `settings` object as a parameter. If there are no settings defined then `easy_cli` will try to load settings object from `CLI.yaml` or `CLI.json` file (which will be searched in the directory tree up to the disk root).
 
 `settings` object can have the following properties:
 
@@ -326,8 +326,12 @@ All single characters from **Multi-boolean** option (see `optionN` definition) a
 
 ### Changelog
 
+* 0.1.2
+ Program will search for `CLI.yaml` and `CLI.json` in the directory tree up to the disk root.
+
 * 0.1.1
  Added `easy_cli().argv_not_null` containing `easy_cli().argv` without `null` variables.
+ Added `easy_cli().argv_no_alias` containing `easy_cli().argv` without aliases.
 
 --
 
