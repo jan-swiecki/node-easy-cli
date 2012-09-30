@@ -1,4 +1,4 @@
-## Easy-CLI v0.1.1 (beta)
+## Easy-CLI v0.1.2 (beta)
 
 Easy Command Line Interface NodeJS module.
 
