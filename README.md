@@ -326,6 +326,10 @@ All single characters from **Multi-boolean** option (see `optionN` definition) a
 
 ### Changelog
 
+* 0.1.3
+
+ Added arrays support, i.e. `--arr[0] abc --arr[1] asd` will become `cli.argv.arr = ['abc', 'asd']`.
+
 * 0.1.2
 
  Program will search for `CLI.yaml` and `CLI.json` in the directory tree up to the disk root.

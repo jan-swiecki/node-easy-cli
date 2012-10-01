@@ -1,0 +1,5 @@
+easy_cli = require './index.js'
+
+argv = easy_cli().argv
+
+console.log argv

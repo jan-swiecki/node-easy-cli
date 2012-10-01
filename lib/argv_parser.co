@@ -289,8 +289,19 @@ class exports.parser
 
 				@argv_no_alias[a] = @argv[a]
 
-		# argv_no_alias <<< @argv
-
+		# convert arrays
+		# i.e. --x[0] a --x[1] b
+		# becomes to x: [a, b]
+		for k in @argv
+			m=k.match /^(.*)\[([0-9]+)\]$/
+			if m
+				@argv.@@[m[1]][m[2]] = @argv[k]
+				@argv_no_alias.@@[m[1]][m[2]] = @argv[k]
+				delete @argv[k]
+				delete @argv_no_alias[k]
+				# argv = argv.slice(0,k).concat(argv.slice(k+1))
+				# if not argv[]
+				# 
 		# clone information across aliases
 		for k in @aliases
 			for l in @aliases[k]
@@ -304,7 +315,6 @@ class exports.parser
 		for k from 0 to _argv.length - 1
 			if typeof _argv[k] !== 'undefined' and _argv[k] !== null
 				argv.push _argv[k]
-
 
 		@argv._ = argv
 
